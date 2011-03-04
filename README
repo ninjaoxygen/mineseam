@@ -5,10 +5,12 @@
   -----------
   
   MineSeam is a tool to convert ore deposits into seams of ore in Minecraft beta maps.
-  It was first publically released on 4th March 2011.
+  It was first publicly released on 4th March 2011.
   
   MineSeam is currently ALPHA software, it has not been thoroughly tested, it may destroy your
   saves and burn down your house!
+  
+  In the near future, I will be adding control of the options and a GUI.
   
   ** IMPORTANT **
   Please back up your save files before using this tool!
@@ -21,13 +23,15 @@
   System Requirements
   -------------------
   
-  MineSeam requires Java J2SE 1.4 or above - please let me know if it does not run on your system.
+  MineSeam requires Java J2SE 5 or above - please let me know if it does not run on your system.
   It hopefully runs on Windows, Linux and OS X, but is currently only tested on Windows.
   
   Usage
   -----
   
+  java -jar mineseam.jar worldname
   
+  This will turn deposits of diamond ore into seams of up to 20 blocks.
   
   Bug Reporting
   -------------
