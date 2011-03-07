@@ -66,14 +66,26 @@ public class MineSeam {
 				return;
 			}
 			
-			String worldin = getMinecraftDir() + "/saves/" + args[0] + "/"; 
-			String worldout = getMinecraftDir() + "/saves/" + args[0] + "/";
+			String worldToModify = args[0];
+			
+			String worldin = getMinecraftDir() + "/saves/" + worldToModify + "/"; 
+			String worldout = getMinecraftDir() + "/saves/" + worldToModify + "/";
+			
+			if (Options.getOptions().doBackup) {
+				// Backup the world before we do anything
+				System.out.println("Backing up world " + worldToModify);
+				ZipWorld.doZip(getMinecraftDir() + "/saves/", worldToModify);
+			}
 
 		    // Ensure the output path exists
 		    //(new File(worldout + "region/")).mkdirs();
 			
+			System.out.println("Processing world...");
+			
 			File worldInFile = new File(worldin);
 			File worldOutFile = new File(worldout);
+			
+			int x_min = 0, x_max = 0, z_min = 0, z_max = 0; // world limits by region file, assume a world based around 0,0
 
 			// examine level.dat to check the map format
 			try {
@@ -85,25 +97,60 @@ public class MineSeam {
 
 			SeamBuilder sb = new SeamBuilder();
 			RegionEditor re = new RegionEditor();
-//			MapBuilder mb = new MapBuilder();
+			MapBuilder mb = new MapBuilder();
 			
-//			mb.setRegionEditor(re);
+			mb.setRegionEditor(re);
 
 			File fo = new File(worldin + "region/");
 			if(fo.isDirectory()) {
 				String internalNames[] = fo.list();
+				String fn;
 				for(int i = 0; i < internalNames.length; i++) {
 					File rf = new File(fo.getAbsolutePath() + "/" + internalNames[i]);
 					if (rf.isFile()) {
 						System.out.println(internalNames[i]);
+
+						// Parse filename to get chunk address, looking for eg "r.-1.2.mcr"
+						String bits[] = internalNames[i].split("\\.");
+						int rx = Integer.parseInt(bits[1]);
+						int rz = Integer.parseInt(bits[2]);
+						
+						x_min = Math.min(x_min, rx);
+						x_max = Math.max(x_max, rx);
+						z_min = Math.min(z_min, rz);
+						z_max = Math.max(z_max, rz);
+						
 						re.load(worldInFile, internalNames[i]);
+						
+						// draw "before" map
+						if (Options.getOptions().mapBefore) {
+							mb.setMapPrefix("map_before_");
+							mb.drawMap((byte)56); // diamond ore
+						}
+						
+						// Apply changes
 						re.apply(sb);
-//						mb.drawMap((byte)56); // diamond ore
+						
+						// draw "after" map
+						if (Options.getOptions().mapAfter) {
+							mb.setMapPrefix("map_after_");
+							mb.drawMap((byte)56); // diamond ore
+						}
+						
 						re.save(worldOutFile, internalNames[i]);
 					}
 				}
 			}
-//			mb.writeHTML();
+			// write HTML for "before" map
+			if (Options.getOptions().mapBefore) {
+				mb.setMapPrefix("map_before_");
+				mb.writeHTML(x_min, x_max, z_min, z_max);
+			}
+			// write HTML for "after" map
+			if (Options.getOptions().mapAfter) {
+				mb.setMapPrefix("map_after_");
+				mb.writeHTML(x_min, x_max, z_min, z_max);
+			}
 			System.out.println("Finished!");
 		} catch (Exception e) {
 			e.printStackTrace();
