@@ -23,10 +23,16 @@ import javax.imageio.ImageIO;
 public class MapBuilder {
 	RegionEditor re;
 	
+	String mapPrefix;
+	
 	byte locateBlock;
 	
 	public void setRegionEditor(RegionEditor red) {
 		re = red;
+	}
+	
+	public void setMapPrefix(String prefix) {
+		mapPrefix = prefix;
 	}
 	
 	public Color getMapBlockColor(byte b) {
@@ -126,14 +132,13 @@ public class MapBuilder {
 	
 	public void writeHTML(int minX, int maxX, int minZ, int maxZ) {
 		try {
-		    // TODO: write the html for map viewing
-		    BufferedWriter out = new BufferedWriter(new FileWriter("map.html"));
+		    BufferedWriter out = new BufferedWriter(new FileWriter(mapPrefix + "map.html"));
 		    
 		    out.write("<html>\r\n<head>\r\n<style>\r\nimg { border: none; padding: 0px; margin: 0px; }\r\ndiv { white-space: nowrap; }\r\n</style>\r\n</head>\r\n<body>\r\n<div>\r\n");
 		    
-	    	for (int z = minZ; z <= minZ; z++) {
+	    	for (int z = minZ; z <= maxZ; z++) {
 	    		for (int x = minX; x <= maxX; x++) {
-		    		out.write("<img src=\"r." + x + "." + z + ".mcr.png\">\r\n");
+		    		out.write("<img src=\"" + mapPrefix + "r." + x + "." + z + ".mcr.png\">\r\n");
 		    	}
 		    	out.write("<br>\r\n");
 		    }
@@ -218,7 +223,7 @@ public class MapBuilder {
 		// Write generated image to a file
 		try {
 			// Save as PNG
-			File file = new File(re.regionString + ".png");
+			File file = new File(mapPrefix + re.regionString + ".png");
 			ImageIO.write(rendImage, "png", file);
 		} catch (IOException e) {
 		}
