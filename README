@@ -10,7 +10,7 @@
   MineSeam is currently ALPHA software, it has not been thoroughly tested, it may destroy your
   saves and burn down your house!
   
-  In the near future, I will be adding control of the options and a GUI.
+  In the near future, I will be adding control of the options through the GUI.
   
   ** IMPORTANT **
   Please back up your save files before using this tool!
@@ -29,9 +29,10 @@
   Usage
   -----
   
-  java -jar mineseam.jar worldname
+  java -jar mineseam.jar
   
-  This will turn deposits of diamond ore into seams of up to 20 blocks.
+  This will open the GUI, allow you to select whether to back up your world and produce before 
+  and after maps. Pressing "Go" will turn deposits of diamond ore into seams of up to 20 blocks.
   
   Bug Reporting
   -------------
